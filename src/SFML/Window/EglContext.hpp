@@ -34,6 +34,10 @@
 #include <SFML/Window/GlContext.hpp>
 #include <SFML/OpenGL.hpp>
 
+#ifdef SFML_BCMHOST
+    #include <bcm_host.h>
+    #include <X11/Xutil.h>
+#endif
 
 namespace sf
 {

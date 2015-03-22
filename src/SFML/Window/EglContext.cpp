@@ -50,6 +50,10 @@ namespace
         
         if (display == EGL_NO_DISPLAY)
         {
+#ifdef SFML_BCMHOST
+            bcm_host_init();
+#endif
+
             display = eglCheck(eglGetDisplay(EGL_DEFAULT_DISPLAY));
             eglCheck(eglInitialize(display, NULL, NULL));
         }
@@ -127,7 +131,46 @@ m_config  (NULL)
     // Create EGL context
     createContext(shared);
     
-#if !defined(SFML_SYSTEM_ANDROID)
+
+#ifdef SFML_BCMHOST
+    static EGL_DISPMANX_WINDOW_T nativewindow;
+
+    DISPMANX_ELEMENT_HANDLE_T dispman_element;
+    DISPMANX_DISPLAY_HANDLE_T dispman_display;
+    DISPMANX_UPDATE_HANDLE_T dispman_update;
+    VC_RECT_T dst_rect;
+    VC_RECT_T src_rect;
+    uint32_t screen_width;
+    uint32_t screen_height;
+
+    // create an EGL window surface
+    graphics_get_display_size(0 /* LCD */, &screen_width, &screen_height);
+
+    dst_rect.x = 0;
+    dst_rect.y = 0;
+    dst_rect.width = screen_width;
+    dst_rect.height = screen_height;
+      
+    src_rect.x = 0;
+    src_rect.y = 0;
+    src_rect.width = screen_width << 16;
+    src_rect.height = screen_height << 16;  
+
+    dispman_display = vc_dispmanx_display_open( 0 /* LCD */);
+    dispman_update = vc_dispmanx_update_start( 0 );
+
+    dispman_element = vc_dispmanx_element_add( dispman_update, dispman_display,
+       0/*layer*/, &dst_rect, 0/*src*/,
+       &src_rect, DISPMANX_PROTECTION_NONE, 0/*alpha*/, 0/*clamp*/, DISPMANX_NO_ROTATE );
+      
+    nativewindow.element = dispman_element;
+    nativewindow.width = screen_width;
+    nativewindow.height = screen_height;
+    vc_dispmanx_update_submit_sync( dispman_update );
+
+    createSurface((EGLNativeWindowType)&nativewindow);
+#elif !defined(SFML_SYSTEM_ANDROID)
+
     // Create EGL surface (except on Android because the window is created 
     // asynchronously, its activity manager will call it for us)
     createSurface((EGLNativeWindowType)owner->getSystemHandle());

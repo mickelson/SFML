@@ -130,6 +130,13 @@ if(SFML_COMPILER_MSVC)
     add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
 endif()
 
+# check if we are building for a raspberry pi
+if(SFML_BCMHOST)
+    add_definitions(-DSFML_BCMHOST)
+    include_directories(/opt/vc/include/interface/vcos/pthreads /opt/vc/include/interface/vmcs_host/linux)
+    set(SFML_OPENGL_ES 1)
+endif()
+
 # define SFML_OPENGL_ES if needed
 if(SFML_OPENGL_ES)
     add_definitions(-DSFML_OPENGL_ES)

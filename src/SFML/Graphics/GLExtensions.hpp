@@ -68,7 +68,18 @@
     #define GLEXT_glClientActiveTexture            glClientActiveTexture
     #define GLEXT_glActiveTexture                  glActiveTexture
     #define GLEXT_GL_TEXTURE0                      GL_TEXTURE0
+
+#ifdef SFML_BCMHOST
+    //
+    // The raspberry pi's GLES1 header declares glBlendEquationOEM but the lib doesn't seem to have
+    // implemented it... so hack in glBlendEquation from GLES2 instead
+    //
+    #include <GLES2/gl2.h>
+    #define GLEXT_glBlendEquation                  glBlendEquation
+#else
     #define GLEXT_glBlendEquation                  glBlendEquationOES
+#endif
+
     #define GLEXT_GL_FUNC_ADD                      GL_FUNC_ADD_OES
     #define GLEXT_GL_FUNC_SUBTRACT                 GL_FUNC_SUBTRACT_OES
 
