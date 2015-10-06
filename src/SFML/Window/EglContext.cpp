@@ -143,6 +143,15 @@ m_config  (NULL)
     uint32_t screen_width;
     uint32_t screen_height;
 
+    VC_DISPMANX_ALPHA_T dispman_alpha;
+
+    // Disable alpha to prevent app looking composed on whatever dispman
+    // is showing (X11) - lifted from SDL source: video/raspberry/SDL_rpivideo.c
+    //
+    dispman_alpha.flags = DISPMANX_FLAGS_ALPHA_FIXED_ALL_PIXELS;
+    dispman_alpha.opacity = 0xFF;
+    dispman_alpha.mask = 0;
+
     // create an EGL window surface
     graphics_get_display_size(0 /* LCD */, &screen_width, &screen_height);
 
@@ -161,7 +170,7 @@ m_config  (NULL)
 
     dispman_element = vc_dispmanx_element_add( dispman_update, dispman_display,
        0/*layer*/, &dst_rect, 0/*src*/,
-       &src_rect, DISPMANX_PROTECTION_NONE, 0/*alpha*/, 0/*clamp*/, DISPMANX_NO_ROTATE );
+       &src_rect, DISPMANX_PROTECTION_NONE, &dispman_alpha, 0/*clamp*/, DISPMANX_NO_ROTATE );
       
     nativewindow.element = dispman_element;
     nativewindow.width = screen_width;
