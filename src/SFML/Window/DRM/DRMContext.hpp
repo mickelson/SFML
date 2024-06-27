@@ -141,13 +141,10 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Create the EGL surface
     ///
-    /// \param width   Back buffer width, in pixels
-    /// \param height  Back buffer height, in pixels
-    /// \param bpp     Pixel depth, in bits per pixel
     /// \param scanout True to present the surface to the screen
     ///
     ////////////////////////////////////////////////////////////
-    void createSurface(unsigned int width, unsigned int height, unsigned int bpp, bool scanout);
+    void createSurface(bool scanout);
 
     ////////////////////////////////////////////////////////////
     /// \brief Destroy the EGL surface
@@ -210,8 +207,6 @@ private:
     gbm_bo* m_currentBO;
     gbm_bo* m_nextBO;
     gbm_surface* m_gbmSurface;
-    unsigned int m_width;
-    unsigned int m_height;
     bool m_shown;
     bool m_scanOut;
 };
