@@ -297,7 +297,7 @@ namespace
             if (fileDescriptor < 0)
                 continue;
             result = getResources(fileDescriptor, resources);
-            if(!result && hasMonitorConnected(fileDescriptor, *resources) != 0)
+            if (!result && hasMonitorConnected(fileDescriptor, *resources) != 0)
             {
 #ifdef SFML_DEBUG
                 sf::err() << "DRM device used: " << device->nodes[DRM_NODE_PRIMARY] << std::endl;
@@ -422,8 +422,8 @@ namespace
 
     void setDrmMode( unsigned int width=0, unsigned int height=0 )
     {
-	// don't do anything if supplied width and height are 0 and we already have a drm mode
-	if (( width == 0 ) && drmNode.mode )
+        // don't do anything if supplied width and height are 0 and we already have a drm mode
+        if (( width == 0 ) && drmNode.mode )
             return;
 
         drmModeConnectorPtr connector = drmNode.savedConnector;
@@ -443,7 +443,7 @@ namespace
         if (refreshString)
             refreshRate = static_cast<unsigned int>(atoi(refreshString));
 
-        bool matched=false;
+        bool matched = false;
         for (int i = 0; i < connector->count_modes; ++i)
         {
             drmModeModeInfoPtr currentMode = &connector->modes[i];
@@ -524,8 +524,8 @@ m_shown      (false),
 m_scanOut    (false)
 {
     contextCount++;
-    if ( initDrm() < 0 )
-	 return;
+    if (initDrm() < 0)
+        return;
 
     setDrmMode();
 
@@ -558,14 +558,14 @@ m_scanOut    (false)
 {
     contextCount++;
 
-    if ( initDrm() < 0 )
+    if (initDrm() < 0)
         return;
 
     Vector2u size;
     if (owner)
         size = owner->getSize();
 
-    setDrmMode( size.x, size.y );
+    setDrmMode(size.x, size.y);
 
     // Get the initialized EGL display
     m_display = getInitializedDisplay();
@@ -595,7 +595,7 @@ m_shown      (false),
 m_scanOut    (false)
 {
     contextCount++;
-    if ( initDrm() < 0 )
+    if (initDrm() < 0)
         return;
 
     setDrmMode();
@@ -710,7 +710,7 @@ void DRMContext::display()
         if (drmModeSetCrtc(drmNode.fileDescriptor, drmNode.crtcId, fb->fbId, 0, 0, &drmNode.connectorId, 1, drmNode.mode))
         {
             err() << "Failed to set mode: " << std::strerror(errno) << std::endl;
-            std::exit( EXIT_FAILURE );
+            std::exit(EXIT_FAILURE);
         }
         m_shown = true;
     }
