@@ -53,7 +53,12 @@ std::vector<VideoMode> VideoModeImpl::getFullscreenModes()
 ////////////////////////////////////////////////////////////
 VideoMode VideoModeImpl::getDesktopMode()
 {
-    if (const auto* ptr = DRMContext::getDRM().mode)
+    const Drm&         drm = DRMContext::getDRM();
+    drmModeModeInfoPtr ptr = drm.mode;
+    if (!ptr) // if no mode has been set, return the original mode we started with
+        ptr = &(drm.originalCrtc->mode);
+
+    if (ptr)
         return VideoMode({ptr->hdisplay, ptr->vdisplay});
 
     return VideoMode({0, 0});
